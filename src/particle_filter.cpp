@@ -44,9 +44,9 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate)
 {
-	double vel_yaw;
-	double yawxdt;
-	// check if driving in a straight line
+	double velocity_yaw;
+	double yaw_dt;
+
 	bool straight = false;
 	if (abs(yaw_rate) < 0.0001)
 	{
@@ -54,8 +54,8 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 	if (!straight)
 	{
-		vel_yaw = velocity / yaw_rate;
-		yawxdt = yaw_rate * delta_t;
+		velocity_yaw = velocity / yaw_rate;
+		yaw_dt = yaw_rate * delta_t;
 	}
 
 	default_random_engine gen;
@@ -63,25 +63,25 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	normal_distribution<double> gaussian_y(0.0, std_pos[1]);
 	normal_distribution<double> gaussian_theta(0.0, std_pos[2]);
 
-	for (int i = 0; i < num_particles; i++)
+	for (auto &particle : particles)
 	{
-		double theta = particles[i].theta;
+		double theta = particle.theta;
 		if (!straight)
 		{
-			particles[i].x += vel_yaw * (sin(theta + yawxdt) - sin(theta));
-			particles[i].y += vel_yaw * (-cos(theta + yawxdt) + cos(theta));
-			particles[i].theta += yawxdt;
+			particle.x += velocity_yaw * (sin(theta + yaw_dt) - sin(theta));
+			particle.y += velocity_yaw * (-cos(theta + yaw_dt) + cos(theta));
+			particle.theta += yaw_dt;
 		}
 		else
 		{
-			particles[i].x += velocity * cos(theta) * delta_t;
-			particles[i].y += velocity * sin(theta) * delta_t;
+			particle.x += velocity * cos(theta) * delta_t;
+			particle.y += velocity * sin(theta) * delta_t;
 		}
 
 		// add gaussian noise to prediction
-		particles[i].x += gaussian_x(gen);
-		particles[i].y += gaussian_y(gen);
-		particles[i].theta += gaussian_theta(gen);
+		particle.x += gaussian_x(gen);
+		particle.y += gaussian_y(gen);
+		particle.theta += gaussian_theta(gen);
 	}
 }
 
