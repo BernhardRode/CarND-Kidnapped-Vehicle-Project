@@ -59,9 +59,9 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 
 	default_random_engine gen;
-	normal_distribution<double> gaussian_x(0.0, std_pos[0]);
-	normal_distribution<double> gaussian_y(0.0, std_pos[1]);
-	normal_distribution<double> gaussian_theta(0.0, std_pos[2]);
+	normal_distribution<double> dist_x(0.0, std_pos[0]);
+	normal_distribution<double> dist_y(0.0, std_pos[1]);
+	normal_distribution<double> dist_theta(0.0, std_pos[2]);
 
 	for (auto &particle : particles)
 	{
@@ -78,10 +78,10 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 			particle.y += velocity * sin(theta) * delta_t;
 		}
 
-		// add gaussian noise to prediction
-		particle.x += gaussian_x(gen);
-		particle.y += gaussian_y(gen);
-		particle.theta += gaussian_theta(gen);
+		// add dist noise to prediction
+		particle.x += dist_x(gen);
+		particle.y += dist_y(gen);
+		particle.theta += dist_theta(gen);
 	}
 }
 
@@ -142,7 +142,7 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 {
 	for (auto &observ : observations)
 	{
-		double min_dist = 1e15; // initialize with a very big number
+		double min_dist = std::numeric_limits<double>::max();
 		for (unsigned int i = 0; i < predicted.size(); i++)
 		{
 			LandmarkObs predict = predicted[i];
