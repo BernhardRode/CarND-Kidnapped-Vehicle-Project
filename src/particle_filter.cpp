@@ -76,9 +76,10 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 	for (auto &particle : particles)
 	{
+		std::vector<LandmarkObs> landmarks_in_range;
+
 		for (auto &landmark : map_landmarks.landmark_list)
 		{
-			std::vector<LandmarkObs> landmarks_in_range;
 			std::vector<LandmarkObs> transformed_observations = observations;
 
 			if (dist(particle.x, particle.y, landmark.x_f, landmark.y_f) <= max_range)
