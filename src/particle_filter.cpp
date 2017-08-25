@@ -72,7 +72,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 																	 std::vector<LandmarkObs> observations, Map map_landmarks)
 {
-	float max_range = sensor_range * 1.3;
+	float max_range = sensor_range * 1.1;
 
 	for (auto &particle : particles)
 	{
