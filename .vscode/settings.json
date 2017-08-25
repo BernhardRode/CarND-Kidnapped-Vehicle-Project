@@ -24,6 +24,7 @@
     "stack": "cpp",
     "unordered_set": "cpp",
     "utility": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "ostream": "cpp"
   }
 }
